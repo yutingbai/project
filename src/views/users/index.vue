@@ -32,6 +32,7 @@
 import myHeader from "@/components/Header";
 export default {
   name: "users",
+  inject: ['reload'],
   components: {
     myHeader
   },
@@ -48,6 +49,7 @@ export default {
             // console.log(this.user)
         });
   },
+  
 };
 </script>
 

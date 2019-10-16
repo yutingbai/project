@@ -11,7 +11,14 @@
         </div>
       </h4>
       <div class="inputBox">
-        <input v-model="email" @blur="isEmail" class="login_text" type="email" placeholder="Email" />
+        <input
+          v-model="email"
+          ref="email"
+          @blur="isEmail(1)"
+          @focus="isEmail(2)"
+          class="login_text"
+          :placeholder="Emailmsg"
+        />
         <div class="clickbtn" :disabled="disabled" @click="handleToVerify">{{ verifyInfo }}</div>
       </div>
       <div>
@@ -21,7 +28,7 @@
         <input v-model="password" class="login_text" type="password" placeholder="请输入您的密码" />
       </div>
       <div>
-        <input v-model="passwordagain" class="login_text" type="password" placeholder="请输再次入您的密码" />
+        <input v-model="passwordagain" ref="passwordagain" class="login_text" type="password" :placeholder="passwordMsg" @blur="isEmail(3)"/>
       </div>
       <div>
         <input v-model="verify" class="login_text" type="text" placeholder="验证码" />
@@ -49,7 +56,9 @@ export default {
       passwordagain: "",
       verify: "",
       verifyInfo: "发送验证码",
-      disabled: false
+      disabled: false,
+      Emailmsg: "Email",
+      passwordMsg:"请再次输入密码"
     };
   },
   mounted() {
@@ -60,20 +69,19 @@ export default {
       if (this.disabled) {
         return;
       }
-      
-        this.disabled = true;    
-        this.axios.get("/xuptbbs/code/" + this.email).then(res => {
-          var status = res.data.code;
-          var This = this;
-          if (status == 0) {
-            This.countDown();
-            alert("验证码已发送!");
-          } else {
-            this.disabled = false;   
-            alert("验证码发送失败!" + res.data.errmsg);
-          }
-        });
-      
+
+      this.disabled = true;
+      this.axios.get("/xuptbbs/code/" + this.email).then(res => {
+        var status = res.data.code;
+        var This = this;
+        if (status == 0) {
+          This.countDown();
+          alert("验证码已发送!");
+        } else {
+          this.disabled = false;
+          alert("验证码发送失败!" + res.data.errmsg);
+        }
+      });
     },
     handleToRegister() {
       this.axios
@@ -97,34 +105,60 @@ export default {
     },
     countDown() {
       this.disabled = true;
-      var count = 6;
+      var count = 60;
       var timer = setInterval(() => {
         count--;
         this.verifyInfo = "剩余" + count + "秒";
         if (count === 0) {
           this.disabled = false;
-          count = 6;
+          count = 60;
           this.verifyInfo = "发送验证码";
           clearInterval(timer);
         }
       }, 1000);
     },
-    isEmail() {
-      var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/; //正则表达式
-      if (this.email === "") {
-        //输入不能为空
-        alert("输入不能为空!");
-        return false;
-      } else if (!reg.test(this.email)) {
-        //正则验证不通过，格式不对
-        // console.log(this.email)
-        
-        alert("邮箱格式错误!");
-        return false;
-      } else {
-        // alert("通过！");
-        return true;
+    isEmail(flag) {
+      switch (flag) {
+        case 1:
+          var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/; //正则表达式
+
+          if (this.email === "") {
+            this.$refs.email.style.borderColor = "#e54847";
+            this.Emailmsg = "输入不能为空";
+            return false;
+          } else if (!reg.test(this.email)) {
+            this.email = "";
+            this.$refs.email.style.borderColor = "#e54847";
+            console.log(this.$refs.email.value)
+            this.Emailmsg = "邮箱格式错误";
+            return false;
+          } else {
+            
+            break;
+          }
+        case 2:
+           this.$refs.email.style.borderColor = "#ccc";
+          break;
+        case 3:
+          if (this.passwordagain === "") {
+            this.$refs.passwordagain.style.borderColor = "#e54847";
+            this.passwordMsg = "输入不能为空";
+            return false;
+          } else if (this.passwordagain != this.password) {
+            this.passwordagain = "";
+            this.$refs.passwordagain.style.borderColor = "#e54847";
+            this.passwordMsg = "两次输入的密码不同";
+            return false;
+          } else {
+            this.$refs.passwordagain.style.borderColor = "#ccc";
+            break;
+          }
+        default:
+          break;
       }
+    },
+    isSame(){
+      
     }
   }
 };

@@ -173,9 +173,9 @@
 
     <div class="editor">
       <div class="titleBox">
-        <input type="text" v-model="title" />
+        <input type="text" v-model="title" placeholder="请输入文章标题" />
       </div>
-      <mavon-editor ref="editor" v-model="doc"></mavon-editor>
+      <mavon-editor :ishljs = "true" ref="editor" v-model="doc" @imgAdd="$imgAdd"></mavon-editor>
     </div>
   </div>
 </template>
@@ -189,12 +189,22 @@ export default {
     return {
       doc: "",
       isFirst: false,
-      title: "请输入文章标题"
+      title: "",
       // postId: "false"
+      formdata : new FormData()
     };
   },
   methods: {
+    
+       // 绑定@imgAdd event
+        $imgAdd(pos, $file){
+            // 第一步.将图片上传到服务器.
+          
+           this.formdata.append('image', $file);
+           
+        },
     handleToPOST() {
+      // console.log(this.formdata.get('image'))
       var This = this;
       var str = new String(this.$route.path);
       var reg = /\=+|\&/g;
@@ -205,10 +215,10 @@ export default {
       if (!board) {
         alert("请先选择文章类型！");
       }
-      if (this.title == "请输入文章标题") {
+      else if (this.title == "") {
         alert("请输入文章标题!");
       }
-      if (board == "PROJECT") {
+      else if (board == "PROJECT") {
         var html = this.$refs.editor.d_render;
         var formData = new FormData();
         formData.append("userId", userId);
@@ -234,6 +244,7 @@ export default {
         formData.append("board", board);
         formData.append("classification", classification);
         formData.append("title", this.title);
+        
         this.axios.post("/xuptbbs/post", formData).then(res => {
           if (res.data.code == 0) {
             alert("发布成功");

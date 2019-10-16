@@ -32,7 +32,7 @@ export default {
      user:{}
     };
   },
-  
+ 
   beforeRouteEnter(to, from, next) {
     var username = window.localStorage.getItem("name");
     var userHead = window.localStorage.getItem("userHead");

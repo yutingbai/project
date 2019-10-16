@@ -32,6 +32,7 @@ import { constants } from "crypto";
 export default {
   
   name: "Login",
+  inject:['reload'],
   data() {
     return {
       username: "",
@@ -59,6 +60,7 @@ export default {
             localStorage.setItem("userHead", res.data.data.avatarUrl);
             localStorage.setItem("userId", res.data.data.id);
              This.$router.push("/users");
+             this.reload();
           } else {
             alert("账户名或密码错误");
           }

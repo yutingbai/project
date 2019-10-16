@@ -34,8 +34,8 @@
         <p class="type">{{item.board | formatCard}}</p>
         <p :class=" item.classification | classCard ">{{item.classification}}</p>
       </div>
-      <div class="iBox">
-        <span>
+      <div class="iBox"><!-- @click="handleToLike(item.id,item.title,item.isLike,item.userVO.id)" -->
+        <span >
           <svg
             t="1569136294571"
             class="icon"
@@ -47,6 +47,7 @@
             height="200"
           >
             <path
+              ref="likeBtn"
               :class="item.isLike | classCard"
               d="M889.018182 193.163636c-41.890909-46.545455-97.745455-69.818182-162.909091-69.818181-48.872727 0-97.745455 16.290909-144.290909 46.545454-11.636364 6.981818-13.963636 20.945455-6.981818 32.581818 6.981818 11.636364 20.945455 13.963636 32.581818 6.981818 37.236364-25.6 76.8-39.563636 118.690909-39.563636 51.2 0 95.418182 18.618182 128 55.854546 39.563636 44.218182 58.181818 109.381818 51.2 179.2-9.309091 104.727273-74.472727 302.545455-393.309091 446.836363C193.163636 707.490909 128 509.672727 118.690909 404.945455c-6.981818-69.818182 11.636364-134.981818 51.2-179.2 32.581818-34.909091 76.8-55.854545 128-55.854546 116.363636 0 195.490909 114.036364 195.490909 116.363636 6.981818 11.636364 20.945455 13.963636 32.581818 6.981819 11.636364-6.981818 13.963636-20.945455 6.981819-32.581819-4.654545-4.654545-93.090909-137.309091-235.054546-137.30909-65.163636 0-121.018182 23.272727-162.909091 69.818181-48.872727 53.527273-72.145455 132.654545-62.836363 214.109091 11.636364 116.363636 81.454545 335.127273 430.545454 488.727273 2.327273 2.327273 6.981818 2.327273 9.309091 2.327273 4.654545 0 6.981818 0 9.309091-2.327273 349.090909-153.6 418.909091-372.363636 430.545454-488.727273 9.309091-81.454545-13.963636-160.581818-62.836363-214.109091z"
               fill="#333333"
@@ -56,7 +57,7 @@
           <span>{{item.likeCount}}</span>
         </span>
 
-        <span>
+        <span @click="handleToJoin(item.id)">
           <svg
             t="1569136036050"
             class="icon"
@@ -84,6 +85,7 @@
 <script>
 export default {
   name: "all",
+  inject:['reload'],
   data() {
     return {
       itemlist: [],
@@ -122,9 +124,8 @@ export default {
             this.itemlist = res.data.content;
             console.log(this.itemlist);
           });
-         
       }
-       if (router == "java") {
+      if (router == "java") {
         this.axios
           .get(
             `/xuptbbs/post/classification?classification=22&id=${this.id}&page=${this.page}&per_page=10`
@@ -133,7 +134,6 @@ export default {
             this.itemlist = res.data.content;
             console.log(this.itemlist);
           });
-         
       }
       if (router == "other") {
         this.axios
@@ -144,9 +144,8 @@ export default {
             this.itemlist = res.data.content;
             console.log(this.itemlist);
           });
-         
       }
-      if(router =="mystar"){
+      if (router == "mystar") {
         this.axios
           .get(
             `/xuptbbs/post/collection?id=${this.id}&page=${this.page}&per_page=10`
@@ -156,7 +155,7 @@ export default {
             console.log(this.itemlist);
           });
       }
-      if(router =="myPost"){
+      if (router == "myPost") {
         this.axios
           .get(
             `/xuptbbs/post/mypost?id=${this.id}&page=${this.page}&per_page=10`
@@ -167,10 +166,26 @@ export default {
           });
       }
     },
-    handleToDetail(cardId){
-            console.log(cardId);
-            this.$router.push('/posted/detail/' + cardId);
-        },
+    handleToDetail(cardId) {
+      // console.log(cardId);
+      this.$router.push("/posted/detail/" + cardId);
+    },
+    handleToLike(cardId,cardTitle,cardisLike,cardOvId) {
+      this.axios
+        .post("/xuptbbs/postlike", {
+          myId: this.id,
+          postId: cardId,
+          summary: cardTitle,
+          type: cardisLike,
+          userId: cardOvId
+        })
+        .then(res => {
+
+      
+        //  this.reload();
+        }); 
+    
+    }
   },
   filters: {
     formatCard(key) {

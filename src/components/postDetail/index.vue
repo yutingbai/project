@@ -2,13 +2,14 @@
 
  <div>
     <div id="detailContrainer" class="slide-enter-active">
-                <div class="content" v-html="content">{{content}}</div>
+                <div class="content markdown-body " v-html="content">{{content}}</div>
         </div>
   
      
 </div>
 </template>
 <script>
+import "mavon-editor/dist/css/index.css";
 import myHeader from "@/components/Header";
 export default {
   name: "detail",

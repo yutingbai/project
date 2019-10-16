@@ -92,6 +92,7 @@ import { constants } from "crypto";
 
 export default {
   name: "resive",
+  inject:['reload'],
   data() {
     return {
       user: {},
@@ -146,6 +147,7 @@ export default {
         var This = this;
         if (status == 0) {
           alert("上传成功");
+          this.reload();
         } else {
           alert("上传失败" + res.data.errmsg);
         }
@@ -162,6 +164,7 @@ export default {
       this.axios.post("/xuptbbs/up_user", data).then(res => {
         if (res.data.code == 0) {
           alert("修改成功");
+          this.reload();
         } else {
           alert("修改失败");
         }
@@ -178,6 +181,7 @@ export default {
        this.axios.post("/xuptbbs/user", data).then(res => {
         if (res.data.code == 0) {
           alert("修改成功");
+          this.reload();
         } else {
           alert("修改失败");
         }
