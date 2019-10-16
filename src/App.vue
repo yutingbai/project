@@ -28,3 +28,11 @@
     }
   }
 </script>
+    <router-view/>
+
+</template>
+
+<style lang="scss">
+
+</style>
+>>>>>>> 027c992dbf02e54cdd3d8dc9f07d43df7f1018a9

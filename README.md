@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # myblog
+=======
+# blog
+>>>>>>> 3156de3f8efd0ab0663d3cd311fb4670b2aaabfe
 
 ## Project setup
 ```
